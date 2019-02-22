@@ -4,26 +4,28 @@ class Imagemagick < Formula
   # Please always keep the Homebrew mirror as the primary URL as the
   # ImageMagick site removes tarballs regularly which means we get issues
   # unnecessarily and older versions of the formula are broken.
-  url "https://dl.bintray.com/homebrew/mirror/ImageMagick-7.0.8-24.tar.xz"
-  mirror "https://www.imagemagick.org/download/ImageMagick-7.0.8-24.tar.xz"
-  sha256 "a547dc24fede9d7340ca96b4b68c14071c302b237bf348c8e0ec541cf75b11a0"
+  url "https://dl.bintray.com/homebrew/mirror/ImageMagick-7.0.8-28.tar.xz"
+  mirror "https://www.imagemagick.org/download/ImageMagick-7.0.8-28.tar.xz"
+  sha256 "d7aeb906b1c6b8d3292d4a8a94f6ac58683e25d972bbb8ebae8b300d8d707a1b"
   head "https://github.com/ImageMagick/ImageMagick.git"
 
   bottle do
-    sha256 "3233f90e1fe6d713fa74b019c295576503583e44ab7b4d1d9cd835078ef859db" => :mojave
-    sha256 "4be13792e97fa6d33a3be33c233376f04c5e478c60a16d0d268ab363622934fa" => :high_sierra
-    sha256 "7075a6cf60480227b9a726b9dbe2d952cc5d66843679f9629bd87bbe1b8f3bd3" => :sierra
+    sha256 "74688c037a7c7956dea858447345f0a6d748c6e968231fdd5957f81ab1228d47" => :mojave
+    sha256 "0bf3c1f5ee316e47e7f2fe8206eb08aaa919d912bbb1bd3b9b859cb6cab547fa" => :high_sierra
+    sha256 "78f3bbfaa7b0f876a19d6d75a41787003044965768d6b8a794de45e4785093ae" => :sierra
   end
 
   depends_on "pkg-config" => :build
 
   depends_on "freetype"
   depends_on "jpeg"
+  depends_on "libheif"
   depends_on "libomp"
   depends_on "libpng"
   depends_on "libtiff"
   depends_on "libtool"
   depends_on "little-cms2"
+  depends_on "openexr"
   depends_on "openjpeg"
   depends_on "webp"
   depends_on "xz"
@@ -42,7 +44,9 @@ class Imagemagick < Formula
       --with-freetype=yes
       --with-modules
       --with-openjp2
+      --with-openexr
       --with-webp=yes
+      --with-heic=yes
       --without-gslib
       --with-gs-font-dir=#{HOMEBREW_PREFIX}/share/ghostscript/fonts
       --without-fftw

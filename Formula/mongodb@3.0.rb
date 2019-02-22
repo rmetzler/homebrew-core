@@ -20,7 +20,6 @@ class MongodbAT30 < Formula
 
   depends_on "go" => :build
   depends_on "scons" => :build
-  depends_on :macos => :mountain_lion
 
   go_resource "github.com/mongodb/mongo-tools" do
     url "https://github.com/mongodb/mongo-tools.git",
@@ -28,11 +27,7 @@ class MongodbAT30 < Formula
       :revision => "86d15daf966ce58f5ce01985db07a7a5a3641ecb"
   end
 
-  needs :cxx11
-
   def install
-    ENV.cxx11 if MacOS.version < :mavericks
-
     # New Go tools have their own build script but the server scons "install"
     # target is still responsible for installing them.
     Language::Go.stage_deps resources, buildpath/"src"

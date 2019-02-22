@@ -1,33 +1,26 @@
 class Node < Formula
   desc "Platform built on V8 to build network applications"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v11.7.0/node-v11.7.0.tar.gz"
-  sha256 "4d95471083735c275ed3fb4d61458940887edbaae663d0c96ea5395c087ab9dc"
+  url "https://nodejs.org/dist/v11.10.0/node-v11.10.0.tar.gz"
+  sha256 "45835c210955cd05cab259e664cc19a6f2748dbda6bc9e13edc9a2e8cc498770"
   head "https://github.com/nodejs/node.git"
 
   bottle do
     cellar :any
-    sha256 "a6cd65189e562d7e34bba1150bd8f0f3c1a3651b7e850dabbc128b18b1f470ff" => :mojave
-    sha256 "c32b208d664897e134ca293fae0554364b5864ba6ad9aca241fa13a608b5c214" => :high_sierra
-    sha256 "74c060517b99ab4a09dd3ecab9daf6c10a9ff1fb113a79f7d971e5be19b00890" => :sierra
+    sha256 "a62bde073d072476eae333e69a78d262de3305798d67662398580e7b248fbf10" => :mojave
+    sha256 "57378866a3a3fe73239b3415a70198d00199c7d69cc92736bb27914623b4be57" => :high_sierra
+    sha256 "2b49f5592f83ea5fcb45bcc65a65b43a0b700e2a831bca943be9143460171056" => :sierra
   end
 
   depends_on "pkg-config" => :build
   depends_on "python@2" => :build
   depends_on "icu4c"
 
-  # Per upstream - "Need g++ 4.8 or clang++ 3.4".
-  fails_with :clang if MacOS.version <= :snow_leopard
-  fails_with :gcc_4_2
-  ("4.3".."4.7").each do |n|
-    fails_with :gcc => n
-  end
-
   # We track major/minor from upstream Node releases.
   # We will accept *important* npm patch releases when necessary.
   resource "npm" do
-    url "https://registry.npmjs.org/npm/-/npm-6.5.0.tgz"
-    sha256 "b0c25f9610085da20921e7eec6ddcecef7fc5ffa6c1b2ddd4007edd5e8414eb2"
+    url "https://registry.npmjs.org/npm/-/npm-6.7.0.tgz"
+    sha256 "6ce036f070fe8fe602577fd80c103c3d7684077b0f567fdc8792c9ec65d35685"
   end
 
   def install

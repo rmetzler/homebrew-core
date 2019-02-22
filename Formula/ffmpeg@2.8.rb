@@ -3,13 +3,13 @@ class FfmpegAT28 < Formula
   homepage "https://ffmpeg.org/"
   url "https://ffmpeg.org/releases/ffmpeg-2.8.15.tar.bz2"
   sha256 "35647f6c1f6d4a1719bc20b76bf4c26e4ccd665f46b5676c0e91c5a04622ee21"
-  revision 2
+  revision 4
 
   bottle do
-    rebuild 3
-    sha256 "fd76220475c8f2f300730c0ba9a0625f13bfebe180871166783890e03377ecb2" => :mojave
-    sha256 "88ce4e3e52df72a8df29b402945d281165f3f73bd3974fc2b941af8811e9cd8c" => :high_sierra
-    sha256 "9731c5500d0311be67e9d5d5631c5249ed7cef5f79e015df7fe4e59b9f672772" => :sierra
+    rebuild 1
+    sha256 "5d98294c8ba9abc1050279d483cd5732322eea149b55bb91cc5ea1004315c39e" => :mojave
+    sha256 "37b37ddee29f08d13d01d0f22a595897848be7f3910ec98f10e273e73bd816e1" => :high_sierra
+    sha256 "770fb7817b355d58757e899413ad5f0f24cf255a69e707959225a4ffb52b8b7f" => :sierra
   end
 
   keg_only :versioned_formula
@@ -18,6 +18,7 @@ class FfmpegAT28 < Formula
   depends_on "texi2html" => :build
   depends_on "yasm" => :build
 
+  depends_on "fontconfig"
   depends_on "freetype"
   depends_on "frei0r"
   depends_on "lame"
@@ -38,7 +39,7 @@ class FfmpegAT28 < Formula
 
   def install
     # Fixes "dyld: lazy symbol binding failed: Symbol not found: _clock_gettime"
-    if MacOS.version == "10.11" && MacOS::Xcode.installed? && MacOS::Xcode.version >= "8.0"
+    if MacOS.version == "10.11" && MacOS::Xcode.version >= "8.0"
       inreplace %w[libavdevice/v4l2.c libavutil/time.c], "HAVE_CLOCK_GETTIME",
                                                          "UNDEFINED_GIBBERISH"
     end
@@ -65,6 +66,7 @@ class FfmpegAT28 < Formula
       --enable-libx264
       --enable-libx265
       --enable-libxvid
+      --enable-libfontconfig
       --enable-libfreetype
       --enable-frei0r
       --enable-libass
@@ -72,8 +74,9 @@ class FfmpegAT28 < Formula
       --enable-libopencore-amrwb
       --enable-librtmp
       --enable-libspeex
+      --enable-opencl
+      --disable-indev=jack
     ]
-    args << "--enable-opencl" if MacOS.version > :lion
 
     # A bug in a dispatch header on 10.10, included via CoreFoundation,
     # prevents GCC from building VDA support. GCC has no problems on

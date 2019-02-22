@@ -20,7 +20,7 @@ class MongodbAT36 < Formula
   depends_on "pkg-config" => :build
   depends_on "scons" => :build
   depends_on :xcode => ["8.3.2", :build]
-  depends_on :macos => :mountain_lion
+
   depends_on "openssl"
   depends_on "python@2"
 
@@ -39,11 +39,7 @@ class MongodbAT36 < Formula
     sha256 "4027c5f6127a6267a435201981ba156de91ad0d1d98e9ddc2aa173453453492d"
   end
 
-  needs :cxx11
-
   def install
-    ENV.cxx11 if MacOS.version < :mavericks
-
     ENV.libcxx
 
     ["Cheetah", "PyYAML", "typing"].each do |r|

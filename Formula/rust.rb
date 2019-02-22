@@ -8,8 +8,8 @@ class Rust < Formula
 
     resource "cargo" do
       url "https://github.com/rust-lang/cargo.git",
-          :tag      => "0.32.0",
-          :revision => "339d9f9c8f400010df3282ae5582bf3a0f739004"
+          :tag      => "0.33.0",
+          :revision => "8610973aaf48615ba7dc9a38a9a2795ba6f36a31"
     end
 
     resource "racer" do
@@ -22,9 +22,10 @@ class Rust < Formula
 
   bottle do
     cellar :any
-    sha256 "8b5ab9ff8232e7439dee2696072092db7e12b967b28b79d3d12a6c767f878ffa" => :mojave
-    sha256 "40a40577df9b566751ac50bd8edc237624942232b950db10ac3f08eb6b4ed8b7" => :high_sierra
-    sha256 "e332630074e758bdfdafda7e66ff085a7ff07987d6d2748d990b8d5293d39e90" => :sierra
+    rebuild 1
+    sha256 "45f65397d37790f9359595eb10e38c12ffd2032c7b961d5aeee2b38ea4e21ca1" => :mojave
+    sha256 "742649151ddd435184927a69cbc4a59b06bc40bd2b85206737efc16cca3eb229" => :high_sierra
+    sha256 "6a37b5828827a1ae6307e702f7ea558bff187e15f682ff471766056f5735acfd" => :sierra
   end
 
   head do
@@ -43,12 +44,6 @@ class Rust < Formula
   depends_on "libssh2"
   depends_on "openssl"
   depends_on "pkg-config"
-
-  # According to the official readme, GCC 4.7+ is required
-  fails_with :gcc_4_2
-  ("4.3".."4.6").each do |n|
-    fails_with :gcc => n
-  end
 
   resource "cargobootstrap" do
     # From https://github.com/rust-lang/rust/blob/#{version}/src/stage0.txt

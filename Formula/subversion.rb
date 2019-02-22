@@ -6,9 +6,10 @@ class Subversion < Formula
   sha256 "9efd2750ca4d72ec903431a24b9c732b6cbb84aad9b7563f59dd96dea5be60bb"
 
   bottle do
-    sha256 "1d0858de6bed79c12fa438af3bf072a5634af792f8e56504df662ec26ce9c7a9" => :mojave
-    sha256 "91995ed6997fb8018e1e29ff683cb711903dcd7b24919eb82980b87424f2280a" => :high_sierra
-    sha256 "2b522d92eb311ab33348a4b414abaa2b8887b87e3a85c1fc36e28a81420d3b3e" => :sierra
+    rebuild 1
+    sha256 "9d3a8c168d6f349d1b61fa842107b74d4a5b14518785ed14a78fd5330e80e7a0" => :mojave
+    sha256 "27c5465c3a107fb20afd70740d058802df1354aaea46b3c60615d49f2592cad8" => :high_sierra
+    sha256 "95b7ba66dbc0450c66af5874df960f675a01ea3ed6a849af629a921a07101e75" => :sierra
   end
 
   head do
@@ -19,6 +20,7 @@ class Subversion < Formula
     depends_on "gettext" => :build
   end
 
+  depends_on :java => ["1.8+", :build]
   depends_on "pkg-config" => :build
   depends_on "scons" => :build # For Serf
   depends_on "swig" => :build
@@ -33,14 +35,6 @@ class Subversion < Formula
   depends_on "perl"
   depends_on "sqlite"
   depends_on "utf8proc"
-
-  # When building Perl or Ruby bindings, need to use a compiler that
-  # recognizes GCC-style switches, since that's what the system languages
-  # were compiled against.
-  fails_with :clang do
-    build 318
-    cause "core.c:1: error: bad value (native) for -march= switch"
-  end
 
   resource "serf" do
     url "https://www.apache.org/dyn/closer.cgi?path=serf/serf-1.3.9.tar.bz2"
@@ -92,6 +86,8 @@ class Subversion < Formula
       --without-apache-libexecdir
       --without-berkeley-db
       --without-gpg-agent
+      --enable-javahl
+      --without-jikes
       RUBY=/usr/bin/ruby
     ]
 
@@ -116,8 +112,15 @@ class Subversion < Formula
     system "make", "install-swig-py"
     (lib/"python2.7/site-packages").install_symlink Dir["#{lib}/svn-python/*"]
 
-    # In theory SWIG can be built in parallel, in practice...
+    # Peg to system Ruby
+    system "make", "swig-rb", "EXTRA_SWIG_LDFLAGS=-L/usr/lib"
+    system "make", "install-swig-rb"
+
+    # Java and Perl support don't build correctly in parallel:
+    # https://github.com/Homebrew/homebrew/issues/20415
     ENV.deparallelize
+    system "make", "javahl"
+    system "make", "install-javahl"
 
     archlib = Utils.popen_read("perl -MConfig -e 'print $Config{archlib}'")
     perl_core = Pathname.new(archlib)/"CORE"
@@ -135,10 +138,6 @@ class Subversion < Formula
     # "Library" directories. It is however pointless to keep around as it
     # only contains the perllocal.pod installation file.
     rm_rf prefix/"Library/Perl"
-
-    # Peg to system Ruby
-    system "make", "swig-rb", "EXTRA_SWIG_LDFLAGS=-L/usr/lib"
-    system "make", "install-swig-rb"
   end
 
   def caveats
@@ -152,6 +151,10 @@ class Subversion < Formula
       If you wish to use the Ruby bindings you may need to add:
         #{HOMEBREW_PREFIX}/lib/ruby
       to your RUBYLIB.
+
+      You may need to link the Java bindings into the Java Extensions folder:
+        sudo mkdir -p /Library/Java/Extensions
+        sudo ln -s #{HOMEBREW_PREFIX}/lib/libsvnjavahl-1.dylib /Library/Java/Extensions/libsvnjavahl-1.dylib
     EOS
   end
 

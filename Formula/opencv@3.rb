@@ -30,8 +30,6 @@ class OpencvAT3 < Formula
     sha256 "8f73d029887c726fed89c69a2b0fcb1d098099fcd81c1070e1af3b452669fbe2"
   end
 
-  needs :cxx11
-
   def install
     ENV.cxx11
     ENV.prepend_path "PATH", Formula["python@2"].opt_libexec/"bin"
@@ -85,9 +83,9 @@ class OpencvAT3 < Formula
       -DPYTHON3_INCLUDE_DIR=#{py3_include}
     ]
 
-    if build.bottle?
-      args += %w[-DENABLE_SSE41=OFF -DENABLE_SSE42=OFF -DENABLE_AVX=OFF
-                 -DENABLE_AVX2=OFF]
+    args << "-DENABLE_AVX=OFF" << "-DENABLE_AVX2=OFF"
+    unless MacOS.version.requires_sse42?
+      args << "-DENABLE_SSE41=OFF" << "-DENABLE_SSE42=OFF"
     end
 
     mkdir "build" do

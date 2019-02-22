@@ -1,15 +1,15 @@
 class Siril < Formula
   desc "Astronomical image processing tool"
-  homepage "https://free-astro.org/index.php/Siril"
-  url "https://free-astro.org/download/siril-0.9.9.tar.bz2"
-  sha256 "7958985393eca33b2db173090af78a46e42a7daefe7f6eaa7efa4ba261fa46f3"
-  revision 4
-  head "http://free-astro.org/svn/siril/", :using => :svn
+  homepage "https://www.siril.org"
+  url "https://free-astro.org/download/siril-0.9.10.tar.bz2"
+  sha256 "caf9800a442bbe3991e820ffc66f41b453c6866f510e2934d236788c78f5be29"
+  revision 1
+  head "https://gitlab.com/free-astro/siril.git"
 
   bottle do
-    sha256 "3540ee3f5a7b6d2b4df41c31ad540c853e987bfd66ee93904fa5eff706d5115a" => :mojave
-    sha256 "beba57ea5812e1e2c004fb1f6e52631a45423bad1b8fee7a88f8515d509e26bb" => :high_sierra
-    sha256 "1a55c8b5faf1e27e30d65d0a565f632c66f8fa4745fcd203912ed0cc5f6002e2" => :sierra
+    sha256 "40cdc7dd3bcd0e41ce5fb9406aecdff78e9869500b209dffeb0e752fbdb86b20" => :mojave
+    sha256 "d2355e6c603ff9927af8aaf129d7f4ae3325e1b28de7cc3267af1b15489f7a74" => :high_sierra
+    sha256 "9755c6591511b6e29cc70e81fdec3cc3bc9dab08eda1b6d1ad5e9be4cd554533" => :sierra
   end
 
   depends_on "autoconf" => :build
@@ -26,6 +26,7 @@ class Siril < Formula
   depends_on "gtk-mac-integration"
   depends_on "jpeg"
   depends_on "libconfig"
+  depends_on "libomp"
   depends_on "libraw"
   depends_on "librsvg"
   depends_on "libsvg"
@@ -33,21 +34,10 @@ class Siril < Formula
   depends_on "opencv"
   depends_on "openjpeg"
 
-  # Upstream fix for compilation with OpenCV 4
-  # Remove in next version
-  patch do
-    url "https://gitlab.com/free-astro/siril/commit/c23c2cc829b2ad9444ccefeb865f7e1b3d49c282.diff"
-    sha256 "22e179e832c7f6a28d5f2bfb3953be477b15450df41ceeb353b77376bec7e048"
-  end
-
-  needs :cxx11
-
   def install
-    ENV.cxx11
-
     # siril uses pkg-config but it has wrong include paths for several
     # headers. Work around that by letting it find all includes.
-    ENV.append_to_cflags "-I#{HOMEBREW_PREFIX}/include"
+    ENV.append_to_cflags "-I#{HOMEBREW_PREFIX}/include -Xpreprocessor -fopenmp -lomp"
 
     system "./autogen.sh", "--prefix=#{prefix}"
     system "make", "install"

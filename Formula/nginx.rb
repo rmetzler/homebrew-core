@@ -8,16 +8,20 @@ class Nginx < Formula
   head "https://hg.nginx.org/nginx/", :using => :hg
 
   bottle do
-    rebuild 1
-    sha256 "7ea37bf70745ef33d48e5dcc978c7595c8113bfe513b3e594ea0321c9332ff88" => :mojave
-    sha256 "435ac2d570973cb1b41e90ce4f75e9f87c841a8aae7f5f314a4922cde2a73c9c" => :high_sierra
-    sha256 "18b69c75e157380d380aadb053a1074b3101cdb97a1d2b2f097ff4b3ecd2f79f" => :sierra
+    rebuild 3
+    sha256 "44aa0030187c79fc9189453bc6104613e8fff669c37dda25d15e7997f21524b7" => :mojave
+    sha256 "9c10b023633065d09e506cfe49007be249f3282842f2bcffe125674461b0aa6f" => :high_sierra
+    sha256 "6d4e3bded139a3c21d789507815f513fcaaed7907c1130f79f3434c473924e2f" => :sierra
   end
 
   depends_on "openssl"
   depends_on "pcre"
 
   def install
+    # keep clean copy of source for compiling dynamic modules e.g. passenger
+    (pkgshare/"src").mkpath
+    system "tar", "-cJf", (pkgshare/"src/src.tar.xz"), "--options", "compression-level=9", "."
+
     # Changes default port to 8080
     inreplace "conf/nginx.conf" do |s|
       s.gsub! "listen       80;", "listen       8080;"
@@ -72,6 +76,8 @@ class Nginx < Formula
       --with-stream_ssl_module
       --with-stream_ssl_preread_module
     ]
+
+    (pkgshare/"src/configure_args.txt").write args.join("\n")
 
     if build.head?
       system "./auto/configure", *args
