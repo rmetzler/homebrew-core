@@ -1,15 +1,16 @@
 class ApacheArrow < Formula
   desc "Columnar in-memory analytics layer designed to accelerate big data"
   homepage "https://arrow.apache.org/"
-  url "https://www.apache.org/dyn/closer.cgi?path=arrow/arrow-0.12.0/apache-arrow-0.12.0.tar.gz"
-  sha256 "34dae7e4dde9274e9a52610683e78a80f3ca312258ad9e9f2c0973cf44247a98"
+  url "https://archive.apache.org/dist/arrow/arrow-0.12.1/apache-arrow-0.12.1.tar.gz"
+  sha256 "e93e43343544e344bbc912b89da01d8abf66596f029d26b2b135b102a9e39895"
+  revision 1
   head "https://github.com/apache/arrow.git"
 
   bottle do
     cellar :any
-    sha256 "20239347b1fec7ddc982af8ebc2de3c9893b40ab58742aa7df89102e7f9f9cb7" => :mojave
-    sha256 "cbe0e81596b6bdb8be0cd5280b0c2dbdb0677d4ebafb804f7139c9ca4eb780db" => :high_sierra
-    sha256 "0859a159c71cfa7f930f286211ba6f24a9bb2678a6bae47bab731c78e32685b0" => :sierra
+    sha256 "f3f5de99bbc3316b6c7c87e00ceb8945fd247a7e677e6e7c9bf67d653ba68c2d" => :mojave
+    sha256 "c04ab30e5bcf672df66859c8179e6ced7458be0f621a3664af1b1d89ff8c46d8" => :high_sierra
+    sha256 "c4231003ed619cbd47cbca2bf74793576f14348b8feea8b3bf22b152dfb82d63" => :sierra
   end
 
   depends_on "autoconf" => :build
